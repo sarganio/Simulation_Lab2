@@ -30,10 +30,20 @@ PROJECTRELATIVE_PATH =
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
-OBJS = $O/lab2p1.o
+OBJS = \
+    $O/Eth.o \
+    $O/lab2p1.o \
+    $O/App_pck_m.o \
+    $O/ARP_m.o \
+    $O/Eth_pck_m.o \
+    $O/IP_pck_m.o
 
 # Message files
-MSGFILES =
+MSGFILES = \
+    App_pck.msg \
+    ARP.msg \
+    Eth_pck.msg \
+    IP_pck.msg
 
 # SM files
 SMFILES =

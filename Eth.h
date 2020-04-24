@@ -23,8 +23,8 @@ public:
 
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
-    virtual void initARP(ARP *msg);
-    virtual void updateArpTable(ARP *msg);
+    //virtual void initARP(ARP *msg);
+    //virtual void updateArpTable(ARP *msg);
     virtual void checkIfThableFinished();
 
 };

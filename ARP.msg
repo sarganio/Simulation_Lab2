@@ -1,4 +1,3 @@
-//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -17,8 +16,9 @@
 // TODO generated message class
 //
 packet ARP {
-    int someField;
-    string anotherField;
-    double arrayField1[];
-    double arrayField2[10];
+    unsigned short opcode;
+    unsigned char srcMAC[8];//e.g. 01-23-45-67-89-AB-CD-EF
+    unsigned char srcIP[4];//e.g. 172.168.32.1
+    unsigned char trgMAC[8];//e.g. 01-23-45-67-89-AB-CD-EF
+    unsigned char trgIP[4];//e.g. 172.168.32.1
 }

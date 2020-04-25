@@ -17,8 +17,9 @@
 // TODO generated message class
 //
 packet Eth_pck {
-    int someField;
-    string anotherField;
-    double arrayField1[];
-    double arrayField2[10];
+	int64_t preamble = 0xAAAAAAAAAAAAAAAB;
+	char sMAC[6];	
+	char  dMAC[6];
+	short Length;
+	int crc;
 }

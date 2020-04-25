@@ -19,29 +19,29 @@
 
 
 /**
- * Class generated from <tt>ARP.msg:18</tt> by nedtool.
+ * Class generated from <tt>ARP.msg:19</tt> by nedtool.
  * <pre>
  * //
  * // TODO generated message class
  * //
  * packet ARP
  * {
- *     unsigned short opcode;
- *     unsigned char srcMAC[8];//e.g. 01-23-45-67-89-AB-CD-EF
- *     unsigned char srcIP[4];//e.g. 172.168.32.1
- *     unsigned char trgMAC[8];//e.g. 01-23-45-67-89-AB-CD-EF
- *     unsigned char trgIP[4];//e.g. 172.168.32.1
+ *     short oper;
+ *     char smac[17];//
+ *     char spa[7];
+ *     char dmac[17];
+ *     char tpa[7];
  * }
  * </pre>
  */
 class ARP : public ::omnetpp::cPacket
 {
   protected:
-    unsigned short opcode;
-    unsigned char srcMAC[8];
-    unsigned char srcIP[4];
-    unsigned char trgMAC[8];
-    unsigned char trgIP[4];
+    short oper;
+    char smac[17];
+    char spa[7];
+    char dmac[17];
+    char tpa[7];
 
   private:
     void copy(const ARP& other);
@@ -60,20 +60,20 @@ class ARP : public ::omnetpp::cPacket
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 
     // field getter/setter methods
-    virtual unsigned short getOpcode() const;
-    virtual void setOpcode(unsigned short opcode);
-    virtual unsigned int getSrcMACArraySize() const;
-    virtual unsigned char getSrcMAC(unsigned int k) const;
-    virtual void setSrcMAC(unsigned int k, unsigned char srcMAC);
-    virtual unsigned int getSrcIPArraySize() const;
-    virtual unsigned char getSrcIP(unsigned int k) const;
-    virtual void setSrcIP(unsigned int k, unsigned char srcIP);
-    virtual unsigned int getTrgMACArraySize() const;
-    virtual unsigned char getTrgMAC(unsigned int k) const;
-    virtual void setTrgMAC(unsigned int k, unsigned char trgMAC);
-    virtual unsigned int getTrgIPArraySize() const;
-    virtual unsigned char getTrgIP(unsigned int k) const;
-    virtual void setTrgIP(unsigned int k, unsigned char trgIP);
+    virtual short getOper() const;
+    virtual void setOper(short oper);
+    virtual unsigned int getSmacArraySize() const;
+    virtual char getSmac(unsigned int k) const;
+    virtual void setSmac(unsigned int k, char smac);
+    virtual unsigned int getSpaArraySize() const;
+    virtual char getSpa(unsigned int k) const;
+    virtual void setSpa(unsigned int k, char spa);
+    virtual unsigned int getDmacArraySize() const;
+    virtual char getDmac(unsigned int k) const;
+    virtual void setDmac(unsigned int k, char dmac);
+    virtual unsigned int getTpaArraySize() const;
+    virtual char getTpa(unsigned int k) const;
+    virtual void setTpa(unsigned int k, char tpa);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const ARP& obj) {obj.parsimPack(b);}

@@ -181,15 +181,15 @@ Register_Class(ARP)
 
 ARP::ARP(const char *name, short kind) : ::omnetpp::cPacket(name,kind)
 {
-    this->opcode = 0;
-    for (unsigned int i=0; i<8; i++)
-        this->srcMAC[i] = 0;
-    for (unsigned int i=0; i<4; i++)
-        this->srcIP[i] = 0;
-    for (unsigned int i=0; i<8; i++)
-        this->trgMAC[i] = 0;
-    for (unsigned int i=0; i<4; i++)
-        this->trgIP[i] = 0;
+    this->oper = 0;
+    for (unsigned int i=0; i<17; i++)
+        this->smac[i] = 0;
+    for (unsigned int i=0; i<7; i++)
+        this->spa[i] = 0;
+    for (unsigned int i=0; i<17; i++)
+        this->dmac[i] = 0;
+    for (unsigned int i=0; i<7; i++)
+        this->tpa[i] = 0;
 }
 
 ARP::ARP(const ARP& other) : ::omnetpp::cPacket(other)
@@ -211,113 +211,113 @@ ARP& ARP::operator=(const ARP& other)
 
 void ARP::copy(const ARP& other)
 {
-    this->opcode = other.opcode;
-    for (unsigned int i=0; i<8; i++)
-        this->srcMAC[i] = other.srcMAC[i];
-    for (unsigned int i=0; i<4; i++)
-        this->srcIP[i] = other.srcIP[i];
-    for (unsigned int i=0; i<8; i++)
-        this->trgMAC[i] = other.trgMAC[i];
-    for (unsigned int i=0; i<4; i++)
-        this->trgIP[i] = other.trgIP[i];
+    this->oper = other.oper;
+    for (unsigned int i=0; i<17; i++)
+        this->smac[i] = other.smac[i];
+    for (unsigned int i=0; i<7; i++)
+        this->spa[i] = other.spa[i];
+    for (unsigned int i=0; i<17; i++)
+        this->dmac[i] = other.dmac[i];
+    for (unsigned int i=0; i<7; i++)
+        this->tpa[i] = other.tpa[i];
 }
 
 void ARP::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cPacket::parsimPack(b);
-    doParsimPacking(b,this->opcode);
-    doParsimArrayPacking(b,this->srcMAC,8);
-    doParsimArrayPacking(b,this->srcIP,4);
-    doParsimArrayPacking(b,this->trgMAC,8);
-    doParsimArrayPacking(b,this->trgIP,4);
+    doParsimPacking(b,this->oper);
+    doParsimArrayPacking(b,this->smac,17);
+    doParsimArrayPacking(b,this->spa,7);
+    doParsimArrayPacking(b,this->dmac,17);
+    doParsimArrayPacking(b,this->tpa,7);
 }
 
 void ARP::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cPacket::parsimUnpack(b);
-    doParsimUnpacking(b,this->opcode);
-    doParsimArrayUnpacking(b,this->srcMAC,8);
-    doParsimArrayUnpacking(b,this->srcIP,4);
-    doParsimArrayUnpacking(b,this->trgMAC,8);
-    doParsimArrayUnpacking(b,this->trgIP,4);
+    doParsimUnpacking(b,this->oper);
+    doParsimArrayUnpacking(b,this->smac,17);
+    doParsimArrayUnpacking(b,this->spa,7);
+    doParsimArrayUnpacking(b,this->dmac,17);
+    doParsimArrayUnpacking(b,this->tpa,7);
 }
 
-unsigned short ARP::getOpcode() const
+short ARP::getOper() const
 {
-    return this->opcode;
+    return this->oper;
 }
 
-void ARP::setOpcode(unsigned short opcode)
+void ARP::setOper(short oper)
 {
-    this->opcode = opcode;
+    this->oper = oper;
 }
 
-unsigned int ARP::getSrcMACArraySize() const
+unsigned int ARP::getSmacArraySize() const
 {
-    return 8;
+    return 17;
 }
 
-unsigned char ARP::getSrcMAC(unsigned int k) const
+char ARP::getSmac(unsigned int k) const
 {
-    if (k>=8) throw omnetpp::cRuntimeError("Array of size 8 indexed by %lu", (unsigned long)k);
-    return this->srcMAC[k];
+    if (k>=17) throw omnetpp::cRuntimeError("Array of size 17 indexed by %lu", (unsigned long)k);
+    return this->smac[k];
 }
 
-void ARP::setSrcMAC(unsigned int k, unsigned char srcMAC)
+void ARP::setSmac(unsigned int k, char smac)
 {
-    if (k>=8) throw omnetpp::cRuntimeError("Array of size 8 indexed by %lu", (unsigned long)k);
-    this->srcMAC[k] = srcMAC;
+    if (k>=17) throw omnetpp::cRuntimeError("Array of size 17 indexed by %lu", (unsigned long)k);
+    this->smac[k] = smac;
 }
 
-unsigned int ARP::getSrcIPArraySize() const
+unsigned int ARP::getSpaArraySize() const
 {
-    return 4;
+    return 7;
 }
 
-unsigned char ARP::getSrcIP(unsigned int k) const
+char ARP::getSpa(unsigned int k) const
 {
-    if (k>=4) throw omnetpp::cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
-    return this->srcIP[k];
+    if (k>=7) throw omnetpp::cRuntimeError("Array of size 7 indexed by %lu", (unsigned long)k);
+    return this->spa[k];
 }
 
-void ARP::setSrcIP(unsigned int k, unsigned char srcIP)
+void ARP::setSpa(unsigned int k, char spa)
 {
-    if (k>=4) throw omnetpp::cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
-    this->srcIP[k] = srcIP;
+    if (k>=7) throw omnetpp::cRuntimeError("Array of size 7 indexed by %lu", (unsigned long)k);
+    this->spa[k] = spa;
 }
 
-unsigned int ARP::getTrgMACArraySize() const
+unsigned int ARP::getDmacArraySize() const
 {
-    return 8;
+    return 17;
 }
 
-unsigned char ARP::getTrgMAC(unsigned int k) const
+char ARP::getDmac(unsigned int k) const
 {
-    if (k>=8) throw omnetpp::cRuntimeError("Array of size 8 indexed by %lu", (unsigned long)k);
-    return this->trgMAC[k];
+    if (k>=17) throw omnetpp::cRuntimeError("Array of size 17 indexed by %lu", (unsigned long)k);
+    return this->dmac[k];
 }
 
-void ARP::setTrgMAC(unsigned int k, unsigned char trgMAC)
+void ARP::setDmac(unsigned int k, char dmac)
 {
-    if (k>=8) throw omnetpp::cRuntimeError("Array of size 8 indexed by %lu", (unsigned long)k);
-    this->trgMAC[k] = trgMAC;
+    if (k>=17) throw omnetpp::cRuntimeError("Array of size 17 indexed by %lu", (unsigned long)k);
+    this->dmac[k] = dmac;
 }
 
-unsigned int ARP::getTrgIPArraySize() const
+unsigned int ARP::getTpaArraySize() const
 {
-    return 4;
+    return 7;
 }
 
-unsigned char ARP::getTrgIP(unsigned int k) const
+char ARP::getTpa(unsigned int k) const
 {
-    if (k>=4) throw omnetpp::cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
-    return this->trgIP[k];
+    if (k>=7) throw omnetpp::cRuntimeError("Array of size 7 indexed by %lu", (unsigned long)k);
+    return this->tpa[k];
 }
 
-void ARP::setTrgIP(unsigned int k, unsigned char trgIP)
+void ARP::setTpa(unsigned int k, char tpa)
 {
-    if (k>=4) throw omnetpp::cRuntimeError("Array of size 4 indexed by %lu", (unsigned long)k);
-    this->trgIP[k] = trgIP;
+    if (k>=7) throw omnetpp::cRuntimeError("Array of size 7 indexed by %lu", (unsigned long)k);
+    this->tpa[k] = tpa;
 }
 
 class ARPDescriptor : public omnetpp::cClassDescriptor
@@ -415,11 +415,11 @@ const char *ARPDescriptor::getFieldName(int field) const
         field -= basedesc->getFieldCount();
     }
     static const char *fieldNames[] = {
-        "opcode",
-        "srcMAC",
-        "srcIP",
-        "trgMAC",
-        "trgIP",
+        "oper",
+        "smac",
+        "spa",
+        "dmac",
+        "tpa",
     };
     return (field>=0 && field<5) ? fieldNames[field] : nullptr;
 }
@@ -428,11 +428,11 @@ int ARPDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount() : 0;
-    if (fieldName[0]=='o' && strcmp(fieldName, "opcode")==0) return base+0;
-    if (fieldName[0]=='s' && strcmp(fieldName, "srcMAC")==0) return base+1;
-    if (fieldName[0]=='s' && strcmp(fieldName, "srcIP")==0) return base+2;
-    if (fieldName[0]=='t' && strcmp(fieldName, "trgMAC")==0) return base+3;
-    if (fieldName[0]=='t' && strcmp(fieldName, "trgIP")==0) return base+4;
+    if (fieldName[0]=='o' && strcmp(fieldName, "oper")==0) return base+0;
+    if (fieldName[0]=='s' && strcmp(fieldName, "smac")==0) return base+1;
+    if (fieldName[0]=='s' && strcmp(fieldName, "spa")==0) return base+2;
+    if (fieldName[0]=='d' && strcmp(fieldName, "dmac")==0) return base+3;
+    if (fieldName[0]=='t' && strcmp(fieldName, "tpa")==0) return base+4;
     return basedesc ? basedesc->findField(fieldName) : -1;
 }
 
@@ -445,11 +445,11 @@ const char *ARPDescriptor::getFieldTypeString(int field) const
         field -= basedesc->getFieldCount();
     }
     static const char *fieldTypeStrings[] = {
-        "unsigned short",
-        "unsigned char",
-        "unsigned char",
-        "unsigned char",
-        "unsigned char",
+        "short",
+        "char",
+        "char",
+        "char",
+        "char",
     };
     return (field>=0 && field<5) ? fieldTypeStrings[field] : nullptr;
 }
@@ -490,10 +490,10 @@ int ARPDescriptor::getFieldArraySize(void *object, int field) const
     }
     ARP *pp = (ARP *)object; (void)pp;
     switch (field) {
-        case 1: return 8;
-        case 2: return 4;
-        case 3: return 8;
-        case 4: return 4;
+        case 1: return 17;
+        case 2: return 7;
+        case 3: return 17;
+        case 4: return 7;
         default: return 0;
     }
 }
@@ -522,11 +522,11 @@ std::string ARPDescriptor::getFieldValueAsString(void *object, int field, int i)
     }
     ARP *pp = (ARP *)object; (void)pp;
     switch (field) {
-        case 0: return ulong2string(pp->getOpcode());
-        case 1: return ulong2string(pp->getSrcMAC(i));
-        case 2: return ulong2string(pp->getSrcIP(i));
-        case 3: return ulong2string(pp->getTrgMAC(i));
-        case 4: return ulong2string(pp->getTrgIP(i));
+        case 0: return long2string(pp->getOper());
+        case 1: return long2string(pp->getSmac(i));
+        case 2: return long2string(pp->getSpa(i));
+        case 3: return long2string(pp->getDmac(i));
+        case 4: return long2string(pp->getTpa(i));
         default: return "";
     }
 }
@@ -541,11 +541,11 @@ bool ARPDescriptor::setFieldValueAsString(void *object, int field, int i, const 
     }
     ARP *pp = (ARP *)object; (void)pp;
     switch (field) {
-        case 0: pp->setOpcode(string2ulong(value)); return true;
-        case 1: pp->setSrcMAC(i,string2ulong(value)); return true;
-        case 2: pp->setSrcIP(i,string2ulong(value)); return true;
-        case 3: pp->setTrgMAC(i,string2ulong(value)); return true;
-        case 4: pp->setTrgIP(i,string2ulong(value)); return true;
+        case 0: pp->setOper(string2long(value)); return true;
+        case 1: pp->setSmac(i,string2long(value)); return true;
+        case 2: pp->setSpa(i,string2long(value)); return true;
+        case 3: pp->setDmac(i,string2long(value)); return true;
+        case 4: pp->setTpa(i,string2long(value)); return true;
         default: return false;
     }
 }

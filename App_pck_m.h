@@ -26,21 +26,12 @@
  * //
  * packet App_pck
  * {
- *     int someField;
- *     string anotherField;
- *     double arrayField1[];
- *     double arrayField2[10];
  * }
  * </pre>
  */
 class App_pck : public ::omnetpp::cPacket
 {
   protected:
-    int someField;
-    ::omnetpp::opp_string anotherField;
-    double *arrayField1; // array ptr
-    unsigned int arrayField1_arraysize;
-    double arrayField2[10];
 
   private:
     void copy(const App_pck& other);
@@ -59,17 +50,6 @@ class App_pck : public ::omnetpp::cPacket
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 
     // field getter/setter methods
-    virtual int getSomeField() const;
-    virtual void setSomeField(int someField);
-    virtual const char * getAnotherField() const;
-    virtual void setAnotherField(const char * anotherField);
-    virtual void setArrayField1ArraySize(unsigned int size);
-    virtual unsigned int getArrayField1ArraySize() const;
-    virtual double getArrayField1(unsigned int k) const;
-    virtual void setArrayField1(unsigned int k, double arrayField1);
-    virtual unsigned int getArrayField2ArraySize() const;
-    virtual double getArrayField2(unsigned int k) const;
-    virtual void setArrayField2(unsigned int k, double arrayField2);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const App_pck& obj) {obj.parsimPack(b);}

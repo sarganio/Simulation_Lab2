@@ -181,23 +181,22 @@ Register_Class(Eth_pck)
 
 Eth_pck::Eth_pck(const char *name, short kind) : ::omnetpp::cPacket(name,kind)
 {
-    this->someField = 0;
-    arrayField1_arraysize = 0;
-    this->arrayField1 = 0;
-    for (unsigned int i=0; i<10; i++)
-        this->arrayField2[i] = 0;
+    this->preamble = 0xAAAAAAAAAAAAAAAB;
+    for (unsigned int i=0; i<6; i++)
+        this->sMAC[i] = 0;
+    for (unsigned int i=0; i<6; i++)
+        this->dMAC[i] = 0;
+    this->Length = 0;
+    this->crc = 0;
 }
 
 Eth_pck::Eth_pck(const Eth_pck& other) : ::omnetpp::cPacket(other)
 {
-    arrayField1_arraysize = 0;
-    this->arrayField1 = 0;
     copy(other);
 }
 
 Eth_pck::~Eth_pck()
 {
-    delete [] this->arrayField1;
 }
 
 Eth_pck& Eth_pck::operator=(const Eth_pck& other)
@@ -210,108 +209,97 @@ Eth_pck& Eth_pck::operator=(const Eth_pck& other)
 
 void Eth_pck::copy(const Eth_pck& other)
 {
-    this->someField = other.someField;
-    this->anotherField = other.anotherField;
-    delete [] this->arrayField1;
-    this->arrayField1 = (other.arrayField1_arraysize==0) ? nullptr : new double[other.arrayField1_arraysize];
-    arrayField1_arraysize = other.arrayField1_arraysize;
-    for (unsigned int i=0; i<arrayField1_arraysize; i++)
-        this->arrayField1[i] = other.arrayField1[i];
-    for (unsigned int i=0; i<10; i++)
-        this->arrayField2[i] = other.arrayField2[i];
+    this->preamble = other.preamble;
+    for (unsigned int i=0; i<6; i++)
+        this->sMAC[i] = other.sMAC[i];
+    for (unsigned int i=0; i<6; i++)
+        this->dMAC[i] = other.dMAC[i];
+    this->Length = other.Length;
+    this->crc = other.crc;
 }
 
 void Eth_pck::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cPacket::parsimPack(b);
-    doParsimPacking(b,this->someField);
-    doParsimPacking(b,this->anotherField);
-    b->pack(arrayField1_arraysize);
-    doParsimArrayPacking(b,this->arrayField1,arrayField1_arraysize);
-    doParsimArrayPacking(b,this->arrayField2,10);
+    doParsimPacking(b,this->preamble);
+    doParsimArrayPacking(b,this->sMAC,6);
+    doParsimArrayPacking(b,this->dMAC,6);
+    doParsimPacking(b,this->Length);
+    doParsimPacking(b,this->crc);
 }
 
 void Eth_pck::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cPacket::parsimUnpack(b);
-    doParsimUnpacking(b,this->someField);
-    doParsimUnpacking(b,this->anotherField);
-    delete [] this->arrayField1;
-    b->unpack(arrayField1_arraysize);
-    if (arrayField1_arraysize==0) {
-        this->arrayField1 = 0;
-    } else {
-        this->arrayField1 = new double[arrayField1_arraysize];
-        doParsimArrayUnpacking(b,this->arrayField1,arrayField1_arraysize);
-    }
-    doParsimArrayUnpacking(b,this->arrayField2,10);
+    doParsimUnpacking(b,this->preamble);
+    doParsimArrayUnpacking(b,this->sMAC,6);
+    doParsimArrayUnpacking(b,this->dMAC,6);
+    doParsimUnpacking(b,this->Length);
+    doParsimUnpacking(b,this->crc);
 }
 
-int Eth_pck::getSomeField() const
+int64_t Eth_pck::getPreamble() const
 {
-    return this->someField;
+    return this->preamble;
 }
 
-void Eth_pck::setSomeField(int someField)
+void Eth_pck::setPreamble(int64_t preamble)
 {
-    this->someField = someField;
+    this->preamble = preamble;
 }
 
-const char * Eth_pck::getAnotherField() const
+unsigned int Eth_pck::getSMACArraySize() const
 {
-    return this->anotherField.c_str();
+    return 6;
 }
 
-void Eth_pck::setAnotherField(const char * anotherField)
+char Eth_pck::getSMAC(unsigned int k) const
 {
-    this->anotherField = anotherField;
+    if (k>=6) throw omnetpp::cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
+    return this->sMAC[k];
 }
 
-void Eth_pck::setArrayField1ArraySize(unsigned int size)
+void Eth_pck::setSMAC(unsigned int k, char sMAC)
 {
-    double *arrayField12 = (size==0) ? nullptr : new double[size];
-    unsigned int sz = arrayField1_arraysize < size ? arrayField1_arraysize : size;
-    for (unsigned int i=0; i<sz; i++)
-        arrayField12[i] = this->arrayField1[i];
-    for (unsigned int i=sz; i<size; i++)
-        arrayField12[i] = 0;
-    arrayField1_arraysize = size;
-    delete [] this->arrayField1;
-    this->arrayField1 = arrayField12;
+    if (k>=6) throw omnetpp::cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
+    this->sMAC[k] = sMAC;
 }
 
-unsigned int Eth_pck::getArrayField1ArraySize() const
+unsigned int Eth_pck::getDMACArraySize() const
 {
-    return arrayField1_arraysize;
+    return 6;
 }
 
-double Eth_pck::getArrayField1(unsigned int k) const
+char Eth_pck::getDMAC(unsigned int k) const
 {
-    if (k>=arrayField1_arraysize) throw omnetpp::cRuntimeError("Array of size %d indexed by %d", arrayField1_arraysize, k);
-    return this->arrayField1[k];
+    if (k>=6) throw omnetpp::cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
+    return this->dMAC[k];
 }
 
-void Eth_pck::setArrayField1(unsigned int k, double arrayField1)
+void Eth_pck::setDMAC(unsigned int k, char dMAC)
 {
-    if (k>=arrayField1_arraysize) throw omnetpp::cRuntimeError("Array of size %d indexed by %d", arrayField1_arraysize, k);
-    this->arrayField1[k] = arrayField1;
+    if (k>=6) throw omnetpp::cRuntimeError("Array of size 6 indexed by %lu", (unsigned long)k);
+    this->dMAC[k] = dMAC;
 }
 
-unsigned int Eth_pck::getArrayField2ArraySize() const
+short Eth_pck::getLength() const
 {
-    return 10;
+    return this->Length;
 }
 
-double Eth_pck::getArrayField2(unsigned int k) const
+void Eth_pck::setLength(short Length)
 {
-    if (k>=10) throw omnetpp::cRuntimeError("Array of size 10 indexed by %lu", (unsigned long)k);
-    return this->arrayField2[k];
+    this->Length = Length;
 }
 
-void Eth_pck::setArrayField2(unsigned int k, double arrayField2)
+int Eth_pck::getCrc() const
 {
-    if (k>=10) throw omnetpp::cRuntimeError("Array of size 10 indexed by %lu", (unsigned long)k);
-    this->arrayField2[k] = arrayField2;
+    return this->crc;
+}
+
+void Eth_pck::setCrc(int crc)
+{
+    this->crc = crc;
 }
 
 class Eth_pckDescriptor : public omnetpp::cClassDescriptor
@@ -379,7 +367,7 @@ const char *Eth_pckDescriptor::getProperty(const char *propertyname) const
 int Eth_pckDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 4+basedesc->getFieldCount() : 4;
+    return basedesc ? 5+basedesc->getFieldCount() : 5;
 }
 
 unsigned int Eth_pckDescriptor::getFieldTypeFlags(int field) const
@@ -392,11 +380,12 @@ unsigned int Eth_pckDescriptor::getFieldTypeFlags(int field) const
     }
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
         FD_ISEDITABLE,
-        FD_ISARRAY | FD_ISEDITABLE,
-        FD_ISARRAY | FD_ISEDITABLE,
+        FD_ISEDITABLE,
     };
-    return (field>=0 && field<4) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<5) ? fieldTypeFlags[field] : 0;
 }
 
 const char *Eth_pckDescriptor::getFieldName(int field) const
@@ -408,22 +397,24 @@ const char *Eth_pckDescriptor::getFieldName(int field) const
         field -= basedesc->getFieldCount();
     }
     static const char *fieldNames[] = {
-        "someField",
-        "anotherField",
-        "arrayField1",
-        "arrayField2",
+        "preamble",
+        "sMAC",
+        "dMAC",
+        "Length",
+        "crc",
     };
-    return (field>=0 && field<4) ? fieldNames[field] : nullptr;
+    return (field>=0 && field<5) ? fieldNames[field] : nullptr;
 }
 
 int Eth_pckDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount() : 0;
-    if (fieldName[0]=='s' && strcmp(fieldName, "someField")==0) return base+0;
-    if (fieldName[0]=='a' && strcmp(fieldName, "anotherField")==0) return base+1;
-    if (fieldName[0]=='a' && strcmp(fieldName, "arrayField1")==0) return base+2;
-    if (fieldName[0]=='a' && strcmp(fieldName, "arrayField2")==0) return base+3;
+    if (fieldName[0]=='p' && strcmp(fieldName, "preamble")==0) return base+0;
+    if (fieldName[0]=='s' && strcmp(fieldName, "sMAC")==0) return base+1;
+    if (fieldName[0]=='d' && strcmp(fieldName, "dMAC")==0) return base+2;
+    if (fieldName[0]=='L' && strcmp(fieldName, "Length")==0) return base+3;
+    if (fieldName[0]=='c' && strcmp(fieldName, "crc")==0) return base+4;
     return basedesc ? basedesc->findField(fieldName) : -1;
 }
 
@@ -436,12 +427,13 @@ const char *Eth_pckDescriptor::getFieldTypeString(int field) const
         field -= basedesc->getFieldCount();
     }
     static const char *fieldTypeStrings[] = {
+        "int64_t",
+        "char",
+        "char",
+        "short",
         "int",
-        "string",
-        "double",
-        "double",
     };
-    return (field>=0 && field<4) ? fieldTypeStrings[field] : nullptr;
+    return (field>=0 && field<5) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **Eth_pckDescriptor::getFieldPropertyNames(int field) const
@@ -480,8 +472,8 @@ int Eth_pckDescriptor::getFieldArraySize(void *object, int field) const
     }
     Eth_pck *pp = (Eth_pck *)object; (void)pp;
     switch (field) {
-        case 2: return pp->getArrayField1ArraySize();
-        case 3: return 10;
+        case 1: return 6;
+        case 2: return 6;
         default: return 0;
     }
 }
@@ -510,10 +502,11 @@ std::string Eth_pckDescriptor::getFieldValueAsString(void *object, int field, in
     }
     Eth_pck *pp = (Eth_pck *)object; (void)pp;
     switch (field) {
-        case 0: return long2string(pp->getSomeField());
-        case 1: return oppstring2string(pp->getAnotherField());
-        case 2: return double2string(pp->getArrayField1(i));
-        case 3: return double2string(pp->getArrayField2(i));
+        case 0: return int642string(pp->getPreamble());
+        case 1: return long2string(pp->getSMAC(i));
+        case 2: return long2string(pp->getDMAC(i));
+        case 3: return long2string(pp->getLength());
+        case 4: return long2string(pp->getCrc());
         default: return "";
     }
 }
@@ -528,10 +521,11 @@ bool Eth_pckDescriptor::setFieldValueAsString(void *object, int field, int i, co
     }
     Eth_pck *pp = (Eth_pck *)object; (void)pp;
     switch (field) {
-        case 0: pp->setSomeField(string2long(value)); return true;
-        case 1: pp->setAnotherField((value)); return true;
-        case 2: pp->setArrayField1(i,string2double(value)); return true;
-        case 3: pp->setArrayField2(i,string2double(value)); return true;
+        case 0: pp->setPreamble(string2int64(value)); return true;
+        case 1: pp->setSMAC(i,string2long(value)); return true;
+        case 2: pp->setDMAC(i,string2long(value)); return true;
+        case 3: pp->setLength(string2long(value)); return true;
+        case 4: pp->setCrc(string2long(value)); return true;
         default: return false;
     }
 }

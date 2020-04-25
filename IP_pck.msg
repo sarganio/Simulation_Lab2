@@ -17,8 +17,10 @@
 // TODO generated message class
 //
 packet IP_pck {
-    int someField;
-    string anotherField;
-    double arrayField1[];
-    double arrayField2[10];
+//*   int total_length;
+//   int id;
+//   char ttl;
+//   char sip[4];
+//   char dip[4];
+ 
 }

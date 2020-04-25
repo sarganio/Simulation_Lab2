@@ -1,12 +1,12 @@
 #
-# OMNeT++/OMNEST Makefile for lab2
+# OMNeT++/OMNEST Makefile for lab2_2
 #
 # This file was generated with the command:
 #  opp_makemake -f --deep -O out -I.
 #
 
 # Name of target to be created (-o option)
-TARGET = lab2$(D)$(EXE_SUFFIX)
+TARGET = lab2_2$(D)$(EXE_SUFFIX)
 TARGET_DIR = .
 
 # User interface (uncomment one) (-u option)
@@ -31,8 +31,10 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
 OBJS = \
+    $O/App.o \
     $O/Eth.o \
-    $O/lab2p1.o \
+    $O/IP.o \
+    $O/Switch.o \
     $O/App_pck_m.o \
     $O/ARP_m.o \
     $O/Eth_pck_m.o \

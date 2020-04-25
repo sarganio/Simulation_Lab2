@@ -26,21 +26,22 @@
  * //
  * packet Eth_pck
  * {
- *     int someField;
- *     string anotherField;
- *     double arrayField1[];
- *     double arrayField2[10];
+ *     int64_t preamble = 0xAAAAAAAAAAAAAAAB;
+ *     char sMAC[6];
+ *     char dMAC[6];
+ *     short Length;
+ *     int crc;
  * }
  * </pre>
  */
 class Eth_pck : public ::omnetpp::cPacket
 {
   protected:
-    int someField;
-    ::omnetpp::opp_string anotherField;
-    double *arrayField1; // array ptr
-    unsigned int arrayField1_arraysize;
-    double arrayField2[10];
+    int64_t preamble;
+    char sMAC[6];
+    char dMAC[6];
+    short Length;
+    int crc;
 
   private:
     void copy(const Eth_pck& other);
@@ -59,17 +60,18 @@ class Eth_pck : public ::omnetpp::cPacket
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 
     // field getter/setter methods
-    virtual int getSomeField() const;
-    virtual void setSomeField(int someField);
-    virtual const char * getAnotherField() const;
-    virtual void setAnotherField(const char * anotherField);
-    virtual void setArrayField1ArraySize(unsigned int size);
-    virtual unsigned int getArrayField1ArraySize() const;
-    virtual double getArrayField1(unsigned int k) const;
-    virtual void setArrayField1(unsigned int k, double arrayField1);
-    virtual unsigned int getArrayField2ArraySize() const;
-    virtual double getArrayField2(unsigned int k) const;
-    virtual void setArrayField2(unsigned int k, double arrayField2);
+    virtual int64_t getPreamble() const;
+    virtual void setPreamble(int64_t preamble);
+    virtual unsigned int getSMACArraySize() const;
+    virtual char getSMAC(unsigned int k) const;
+    virtual void setSMAC(unsigned int k, char sMAC);
+    virtual unsigned int getDMACArraySize() const;
+    virtual char getDMAC(unsigned int k) const;
+    virtual void setDMAC(unsigned int k, char dMAC);
+    virtual short getLength() const;
+    virtual void setLength(short Length);
+    virtual int getCrc() const;
+    virtual void setCrc(int crc);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const Eth_pck& obj) {obj.parsimPack(b);}

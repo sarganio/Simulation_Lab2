@@ -16,9 +16,6 @@
 //
 // TODO generated message class
 //
-packet App_pck {
-    int someField;
-    string anotherField;
-    double arrayField1[];
-    double arrayField2[10];
+packet App_pck{
+    
 }

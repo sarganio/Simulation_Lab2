@@ -181,23 +181,15 @@ Register_Class(IP_pck)
 
 IP_pck::IP_pck(const char *name, short kind) : ::omnetpp::cPacket(name,kind)
 {
-    this->someField = 0;
-    arrayField1_arraysize = 0;
-    this->arrayField1 = 0;
-    for (unsigned int i=0; i<10; i++)
-        this->arrayField2[i] = 0;
 }
 
 IP_pck::IP_pck(const IP_pck& other) : ::omnetpp::cPacket(other)
 {
-    arrayField1_arraysize = 0;
-    this->arrayField1 = 0;
     copy(other);
 }
 
 IP_pck::~IP_pck()
 {
-    delete [] this->arrayField1;
 }
 
 IP_pck& IP_pck::operator=(const IP_pck& other)
@@ -210,108 +202,16 @@ IP_pck& IP_pck::operator=(const IP_pck& other)
 
 void IP_pck::copy(const IP_pck& other)
 {
-    this->someField = other.someField;
-    this->anotherField = other.anotherField;
-    delete [] this->arrayField1;
-    this->arrayField1 = (other.arrayField1_arraysize==0) ? nullptr : new double[other.arrayField1_arraysize];
-    arrayField1_arraysize = other.arrayField1_arraysize;
-    for (unsigned int i=0; i<arrayField1_arraysize; i++)
-        this->arrayField1[i] = other.arrayField1[i];
-    for (unsigned int i=0; i<10; i++)
-        this->arrayField2[i] = other.arrayField2[i];
 }
 
 void IP_pck::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cPacket::parsimPack(b);
-    doParsimPacking(b,this->someField);
-    doParsimPacking(b,this->anotherField);
-    b->pack(arrayField1_arraysize);
-    doParsimArrayPacking(b,this->arrayField1,arrayField1_arraysize);
-    doParsimArrayPacking(b,this->arrayField2,10);
 }
 
 void IP_pck::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cPacket::parsimUnpack(b);
-    doParsimUnpacking(b,this->someField);
-    doParsimUnpacking(b,this->anotherField);
-    delete [] this->arrayField1;
-    b->unpack(arrayField1_arraysize);
-    if (arrayField1_arraysize==0) {
-        this->arrayField1 = 0;
-    } else {
-        this->arrayField1 = new double[arrayField1_arraysize];
-        doParsimArrayUnpacking(b,this->arrayField1,arrayField1_arraysize);
-    }
-    doParsimArrayUnpacking(b,this->arrayField2,10);
-}
-
-int IP_pck::getSomeField() const
-{
-    return this->someField;
-}
-
-void IP_pck::setSomeField(int someField)
-{
-    this->someField = someField;
-}
-
-const char * IP_pck::getAnotherField() const
-{
-    return this->anotherField.c_str();
-}
-
-void IP_pck::setAnotherField(const char * anotherField)
-{
-    this->anotherField = anotherField;
-}
-
-void IP_pck::setArrayField1ArraySize(unsigned int size)
-{
-    double *arrayField12 = (size==0) ? nullptr : new double[size];
-    unsigned int sz = arrayField1_arraysize < size ? arrayField1_arraysize : size;
-    for (unsigned int i=0; i<sz; i++)
-        arrayField12[i] = this->arrayField1[i];
-    for (unsigned int i=sz; i<size; i++)
-        arrayField12[i] = 0;
-    arrayField1_arraysize = size;
-    delete [] this->arrayField1;
-    this->arrayField1 = arrayField12;
-}
-
-unsigned int IP_pck::getArrayField1ArraySize() const
-{
-    return arrayField1_arraysize;
-}
-
-double IP_pck::getArrayField1(unsigned int k) const
-{
-    if (k>=arrayField1_arraysize) throw omnetpp::cRuntimeError("Array of size %d indexed by %d", arrayField1_arraysize, k);
-    return this->arrayField1[k];
-}
-
-void IP_pck::setArrayField1(unsigned int k, double arrayField1)
-{
-    if (k>=arrayField1_arraysize) throw omnetpp::cRuntimeError("Array of size %d indexed by %d", arrayField1_arraysize, k);
-    this->arrayField1[k] = arrayField1;
-}
-
-unsigned int IP_pck::getArrayField2ArraySize() const
-{
-    return 10;
-}
-
-double IP_pck::getArrayField2(unsigned int k) const
-{
-    if (k>=10) throw omnetpp::cRuntimeError("Array of size 10 indexed by %lu", (unsigned long)k);
-    return this->arrayField2[k];
-}
-
-void IP_pck::setArrayField2(unsigned int k, double arrayField2)
-{
-    if (k>=10) throw omnetpp::cRuntimeError("Array of size 10 indexed by %lu", (unsigned long)k);
-    this->arrayField2[k] = arrayField2;
 }
 
 class IP_pckDescriptor : public omnetpp::cClassDescriptor
@@ -379,7 +279,7 @@ const char *IP_pckDescriptor::getProperty(const char *propertyname) const
 int IP_pckDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 4+basedesc->getFieldCount() : 4;
+    return basedesc ? 0+basedesc->getFieldCount() : 0;
 }
 
 unsigned int IP_pckDescriptor::getFieldTypeFlags(int field) const
@@ -390,13 +290,7 @@ unsigned int IP_pckDescriptor::getFieldTypeFlags(int field) const
             return basedesc->getFieldTypeFlags(field);
         field -= basedesc->getFieldCount();
     }
-    static unsigned int fieldTypeFlags[] = {
-        FD_ISEDITABLE,
-        FD_ISEDITABLE,
-        FD_ISARRAY | FD_ISEDITABLE,
-        FD_ISARRAY | FD_ISEDITABLE,
-    };
-    return (field>=0 && field<4) ? fieldTypeFlags[field] : 0;
+    return 0;
 }
 
 const char *IP_pckDescriptor::getFieldName(int field) const
@@ -407,23 +301,12 @@ const char *IP_pckDescriptor::getFieldName(int field) const
             return basedesc->getFieldName(field);
         field -= basedesc->getFieldCount();
     }
-    static const char *fieldNames[] = {
-        "someField",
-        "anotherField",
-        "arrayField1",
-        "arrayField2",
-    };
-    return (field>=0 && field<4) ? fieldNames[field] : nullptr;
+    return nullptr;
 }
 
 int IP_pckDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
-    int base = basedesc ? basedesc->getFieldCount() : 0;
-    if (fieldName[0]=='s' && strcmp(fieldName, "someField")==0) return base+0;
-    if (fieldName[0]=='a' && strcmp(fieldName, "anotherField")==0) return base+1;
-    if (fieldName[0]=='a' && strcmp(fieldName, "arrayField1")==0) return base+2;
-    if (fieldName[0]=='a' && strcmp(fieldName, "arrayField2")==0) return base+3;
     return basedesc ? basedesc->findField(fieldName) : -1;
 }
 
@@ -435,13 +318,7 @@ const char *IP_pckDescriptor::getFieldTypeString(int field) const
             return basedesc->getFieldTypeString(field);
         field -= basedesc->getFieldCount();
     }
-    static const char *fieldTypeStrings[] = {
-        "int",
-        "string",
-        "double",
-        "double",
-    };
-    return (field>=0 && field<4) ? fieldTypeStrings[field] : nullptr;
+    return nullptr;
 }
 
 const char **IP_pckDescriptor::getFieldPropertyNames(int field) const
@@ -480,8 +357,6 @@ int IP_pckDescriptor::getFieldArraySize(void *object, int field) const
     }
     IP_pck *pp = (IP_pck *)object; (void)pp;
     switch (field) {
-        case 2: return pp->getArrayField1ArraySize();
-        case 3: return 10;
         default: return 0;
     }
 }
@@ -510,10 +385,6 @@ std::string IP_pckDescriptor::getFieldValueAsString(void *object, int field, int
     }
     IP_pck *pp = (IP_pck *)object; (void)pp;
     switch (field) {
-        case 0: return long2string(pp->getSomeField());
-        case 1: return oppstring2string(pp->getAnotherField());
-        case 2: return double2string(pp->getArrayField1(i));
-        case 3: return double2string(pp->getArrayField2(i));
         default: return "";
     }
 }
@@ -528,10 +399,6 @@ bool IP_pckDescriptor::setFieldValueAsString(void *object, int field, int i, con
     }
     IP_pck *pp = (IP_pck *)object; (void)pp;
     switch (field) {
-        case 0: pp->setSomeField(string2long(value)); return true;
-        case 1: pp->setAnotherField((value)); return true;
-        case 2: pp->setArrayField1(i,string2double(value)); return true;
-        case 3: pp->setArrayField2(i,string2double(value)); return true;
         default: return false;
     }
 }
@@ -544,9 +411,7 @@ const char *IP_pckDescriptor::getFieldStructName(int field) const
             return basedesc->getFieldStructName(field);
         field -= basedesc->getFieldCount();
     }
-    switch (field) {
-        default: return nullptr;
-    };
+    return nullptr;
 }
 
 void *IP_pckDescriptor::getFieldStructValuePointer(void *object, int field, int i) const

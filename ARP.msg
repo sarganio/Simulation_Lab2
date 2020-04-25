@@ -17,9 +17,16 @@
 // TODO generated message class
 //
 packet ARP {
+<<<<<<< HEAD
 	short oper;
 	char smac[17];//
 	char spa[7];
 	char dmac[17];
 	char tpa[7];
+=======
+    int someField;
+    string anotherField;
+    double arrayField1[];
+    double arrayField2[10];
+>>>>>>> parent of f675109... added feilds in ARP and created Helper.h for defines
 }

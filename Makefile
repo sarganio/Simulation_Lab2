@@ -30,6 +30,7 @@ PROJECTRELATIVE_PATH =
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
+<<<<<<< HEAD
 OBJS = \
     $O/App.o \
     $O/Eth.o \
@@ -39,13 +40,12 @@ OBJS = \
     $O/ARP_m.o \
     $O/Eth_pck_m.o \
     $O/IP_pck_m.o
+=======
+OBJS = $O/lab2p1.o
+>>>>>>> parent of f675109... added feilds in ARP and created Helper.h for defines
 
 # Message files
-MSGFILES = \
-    App_pck.msg \
-    ARP.msg \
-    Eth_pck.msg \
-    IP_pck.msg
+MSGFILES =
 
 # SM files
 SMFILES =

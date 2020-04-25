@@ -9,6 +9,10 @@ Eth::~Eth() {
 
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of f675109... added feilds in ARP and created Helper.h for defines
 struct ARPentry {
     char MAC_addr[17];
     char IP_addr[7];
@@ -19,6 +23,10 @@ ARPentry ARPTable[3];
 
 int dstIndex;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of f675109... added feilds in ARP and created Helper.h for defines
 void Eth::initialize() {
     int i;
     memset(ARPTable, 0, sizeof(ARPTable));   //clear the  arp table
@@ -33,6 +41,10 @@ void Eth::initialize() {
     EV << "host sent initial ARP message ";
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of f675109... added feilds in ARP and created Helper.h for defines
 void Eth::handleMessage(cMessage *msg) {
 
     ARP *message = check_and_cast<ARP *>(msg);
